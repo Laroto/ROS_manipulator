@@ -1,0 +1,29 @@
+<launch>
+
+    <arg name="use_gui" default="true" doc="Should the joint_state_publisher use a GUI for controlling joint states" />
+
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neeeilit)/urdf/meu.xacro'"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neeeilit)/cfg/rviz_cfg.rviz" />
+    
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" output="screen" unless="$(arg use_gui)" />
+    <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui" output="screen" if="$(arg use_gui)" />
+
+    <!-- adicioneu depois -->
+    <rosparam command="load"
+            file="$(find neeeilit)/cfg/my_joints.yaml" />
+  
+    <!-- Spawn controllers -->
+    <node name="bot_controller_spawner"
+            pkg="controller_manager"
+            type="spawner"
+            output="screen"
+            args="joint_state_controller
+                joint1_controller
+                joint2_controller
+                joint3_controller
+                joint4_controller" />
+
+</launch>
