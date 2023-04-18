@@ -19,11 +19,11 @@ void callback(const neeeilit::target::ConstPtr& msg)
     float l4 = 0.135;
     //float phi = 0;
 
-    if((msg->x*msg->x + msg->y*msg->y + msg->z*msg->z  > 0.35*0.35) || (msg->x*msg->x + msg->y*msg->y + msg->z*msg->z  < l4*l4 ) || msg->x < 0 || msg->z < 0 )
-    {
-        ROS_ERROR("Target out of reach");
-        return;
-    }
+    // if((msg->x*msg->x + msg->y*msg->y + msg->z*msg->z  > 0.35*0.35) || (msg->x*msg->x + msg->y*msg->y + msg->z*msg->z  < l4*l4 ) || msg->x < 0 || msg->z < 0 )
+    // {
+    //     ROS_ERROR("Target out of reach");
+    //     return;
+    // }
 
     out_msg.joint1 = atan2(msg->y, msg->x) + M_PI/2;
 
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     pub = n.advertise<neeeilit::arm_pos>("/interface", 1);
     ros::Subscriber sub = n.subscribe("/arm_pos", 1, callback);
 
-    ros::Rate rate(50);
+    ros::Rate rate(100);
 
     while(ros::ok())
     {

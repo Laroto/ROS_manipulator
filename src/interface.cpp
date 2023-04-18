@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     
     send_servos_serial(fd, servos, 5);
 
-    ros::Rate rate(10);
+    ros::Rate rate(20);
 
     ROS_WARN("Interface node started");
 

@@ -1,6 +1,10 @@
 import cv2
 import mediapipe as mp
+import rospy
+from neeeilit.msg import target
 
+rospy.init_node('vision')
+pub = rospy.Publisher('/arm_pos', target, queue_size=1)
 
 class handTracker():
     def __init__(self, mode=False, maxHands=1, detectionCon=0.5, modelComplexity=1, trackCon=0.5):
@@ -31,6 +35,7 @@ class handTracker():
         if self.results.multi_hand_landmarks:
             Hand = self.results.multi_hand_landmarks[handNo]
             sp_lmlist = Hand.landmark
+            #wp_lmlist = Hand.world_landmark
             if draw != None:
                 h, w, c = image.shape
                 lm = sp_lmlist[draw]
@@ -47,10 +52,17 @@ def main():
 
     while True:
         success, image = cap.read()
+        image = cv2.flip(image,1)
         image = tracker.handsFinder(image)
         sp = tracker.positionFinder(image)
         if len(sp) != 0:
             print(sp[8])
+            msg = target()
+            msg.x = 0.2
+            msg.y = (sp[8].x - 0.5) * 0.4
+            msg.z = (1-sp[8].y) * 0.18
+            msg.pitch = 0
+            pub.publish(msg)
 
         cv2.imshow("Video", image)
         cv2.waitKey(1)

@@ -174,9 +174,9 @@ ${catkin_LIBRARIES}
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/command_sender.py
-  scripts/soft_interface.py
   scripts/arm.py
   scripts/targets.py
+  scripts/vision.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
