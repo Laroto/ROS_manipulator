@@ -44,7 +44,7 @@ Servo servos[5] = {
         Servo(0, 180, 15),
         Servo(0, 180, 20),
         Servo(0, 180, 75),
-        Servo(0, 180, 0)
+        Servo(0, 180, 89)
     };
 
 void callback(const neeeilit::arm_pos::ConstPtr& msg)
@@ -55,7 +55,9 @@ void callback(const neeeilit::arm_pos::ConstPtr& msg)
     servos[1].setAngle(msg->joint2);
     servos[2].setAngle(msg->joint3);
     servos[3].setAngle(msg->joint4);
-    servos[4].setAngle(msg->gripper);
+
+    if (msg->gripper <=90)
+        servos[4].setAngle(msg->gripper);
 
     std::cout << "  Servo 1: " << servos[0].getAngle();
     std::cout << "  Servo 2: " << servos[1].getAngle();
@@ -100,7 +102,7 @@ int main(int argc, char **argv)
     
     send_servos_serial(fd, servos, 5);
 
-    ros::Rate rate(20);
+    ros::Rate rate(10);
 
     ROS_WARN("Interface node started");
 

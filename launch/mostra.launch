@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    
+    <param name="port" value="/dev/ttyACM0" />
+
+    <node name="interface" pkg="neeeilit" type="physical_interface" output="screen"/>
+
+    <node name="kinematics" pkg="neeeilit" type="inverse" output="screen"/>
+
+    <param name="port" value="/dev/ttyACM0" />
+    <node name="visao" pkg="neeeilit" type="vision.py" />
+
+</launch>

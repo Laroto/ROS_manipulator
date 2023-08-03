@@ -58,6 +58,8 @@ void callback(const neeeilit::target::ConstPtr& msg)
     out_msg.joint2 *= 180 / M_PI;
     out_msg.joint3 *= 180 / M_PI;
     out_msg.joint4 *= 180 / M_PI;
+    out_msg.gripper = msg->gripper;
+    
 
     if (isnanf(out_msg.joint1) || isnanf(out_msg.joint2) || isnanf(out_msg.joint3) || isnanf(out_msg.joint4))
     {
@@ -72,6 +74,9 @@ void callback(const neeeilit::target::ConstPtr& msg)
 
         if (isnanf(out_msg.joint4))
             ROS_ERROR("joint4 ");
+
+        if (isnanf(out_msg.gripper))
+            ROS_ERROR("gripper ");
 
         ROS_ERROR("NAN");
         return;

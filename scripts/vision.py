@@ -40,15 +40,31 @@ class handTracker():
                 h, w, c = image.shape
                 lm = sp_lmlist[draw]
                 cx, cy = int(lm.x*w), int(lm.y*h)
-                cv2.circle(image, (cx, cy), 15,
+                cv2.circle(image, (cx, cy), 9,
                            (255, 0, 255), cv2.FILLED)
+                
+                # cv2.circle(image, (cx, cy), 5,
+                #            (0, 255, 0), cv2.FILLED)
+                # cv2.circle(image, (cx, cy), 17,
+                #            (0, 255, 0), cv2.FILLED)
+                
+                
+                           
+                
 
         return sp_lmlist
 
+def distanceCalculate(p1, p2):
+    """p1 and p2 in format (x1,y1) and (x2,y2) tuples"""
+    dis = ((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2) ** 0.5
+    return dis
 
 def main():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0) # 0 para camara do pc e 4 para camara usb
     tracker = handTracker()
+
+    cv2.namedWindow("Video", cv2.WND_PROP_FULLSCREEN)
+    cv2.setWindowProperty("Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
     while True:
         success, image = cap.read()
@@ -57,15 +73,31 @@ def main():
         sp = tracker.positionFinder(image)
         if len(sp) != 0:
             print(sp[8])
+        
             msg = target()
             msg.x = 0.2
             msg.y = (sp[8].x - 0.5) * 0.4
             msg.z = (1-sp[8].y) * 0.18
-            msg.pitch = 0
+
+            dist = distanceCalculate(sp[4], sp[16])
+            print (dist)
+
+            
+
+            if dist < 0.05:
+                msg.gripper = 0
+            else:
+                msg.gripper = 90
+
             pub.publish(msg)
 
+        #cv2.namedWindow("video", cv2.WND_PROP_FULLSCREEN)
+        #cv2.setWindowProperty("video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        
         cv2.imshow("Video", image)
-        cv2.waitKey(1)
+        if (cv2.waitKey(1) & 0x7F == ord('q')):
+            print("Exit requested")
+            break
 
 
 if __name__ == "__main__":
